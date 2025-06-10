@@ -1,0 +1,40 @@
+﻿@model List<WebApplication2.Models.AppUser>
+<form asp-action="MyPatients" method="get" class="row mt-5">
+    <div class="col-md-3">
+        <label for="startDate">From :</label>
+        <input type="date" name="startDate" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label for="endDate">To :</label>
+        <input type="date" name="endDate" class="form-control" />
+    </div>
+    <div class="col-md-3 align-self-end">
+        <button type="submit" class="btn btn-primary">🔍 filtering</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped mt-5 pt-0-5">
+    <thead class="table-light">
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th> 
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.FullName</td>
+                <td>@p.Email</td>
+                <td>@p.Phone</td>
+                <td>
+                    <a class="btn btn-sm btn-primary"
+                       asp-action="PatientAppointments"
+                       asp-route-patientId="@p.UserID">📅 View Appointments</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

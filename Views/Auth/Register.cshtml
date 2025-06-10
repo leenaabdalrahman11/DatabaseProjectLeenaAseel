@@ -1,0 +1,136 @@
+﻿@model WebApplication2.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Registration";
+    var specialties = ViewBag.Specialties as List<WebApplication2.Models.Specialty>;
+}
+
+<div class="container mt-5 pt-5 d-flex justify-content-center">
+    <div class="card shadow p-4 w-100" style="max-width: 650px; border-radius: 1rem;">
+        <h3 class="text-center mb-4"> Registration</h3>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger text-center">@ViewBag.Error</div>
+        }
+
+        <form asp-action="Register" asp-controller="Auth" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input asp-for="FullName" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" type="email" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input asp-for="PasswordHash" type="password" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mobile</label>
+                <input asp-for="Phone" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Role</label>
+                <select asp-for="Role" class="form-select" id="roleSelect" onchange="toggleFields()" required>
+                    <option value="">Choose...</option>
+                    <option value="Patient">Patient</option>
+                    <option value="Doctor">Doctor</option>
+                </select>
+            </div>
+
+            <div id="patientFields" style="display:none;">
+                <div class="mb-3">
+                    <label class="form-label">Date of Birth</label>
+                    <input asp-for="DateOfBirth" type="date" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Gender</label>
+                    <select asp-for="Gender" class="form-select">
+                        <option value="">Choose</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <input asp-for="Address" class="form-control" />
+                </div>
+            </div>
+
+            <div id="doctorFields" style="display:none;">
+                <div class="mb-3">
+                    <label class="form-label">About the Doctor</label>
+                    <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Specialty</label>
+                    <select asp-for="SpecialtyID" class="form-select" required>
+                        <option value="">--Choose--</option>
+                        @foreach (var s in specialties)
+                        {
+                            <option value="@s.SpecialtyID">@s.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Available Days</label>
+					<div id="availableDaysCheckboxes" class="form-check" >
+                        @foreach (var day in new[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" })
+                        {
+							<div class="form-check" >
+								<input type="checkbox" class="form-check-input" value="@day" style="background-color:#196779" onchange="updateAvailableDays()" id="day_@day" />
+                                <label class="form-check-label" for="day_@day">@day</label>
+                            </div>
+                        }
+                    </div>
+                    <input type="hidden" asp-for="AvailableDays" id="availableDaysInput" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Clinic Address</label>
+                    <input asp-for="ClinicAddress" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Doctor's Photo (optional)</label>
+                    <input type="file" name="PhotoFile" class="form-control" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Register</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleFields() {
+            const role = document.getElementById("roleSelect").value;
+            document.getElementById("patientFields").style.display = (role === "Patient") ? "block" : "none";
+            document.getElementById("doctorFields").style.display = (role === "Doctor") ? "block" : "none";
+        }
+
+        function updateAvailableDays() {
+            const checkboxes = document.querySelectorAll("#availableDaysCheckboxes input[type='checkbox']");
+            const selected = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            document.getElementById("availableDaysInput").value = selected.join(',');
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleFields();
+            updateAvailableDays();
+        });
+    </script>
+}

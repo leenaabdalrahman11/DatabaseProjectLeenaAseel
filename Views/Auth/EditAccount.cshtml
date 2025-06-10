@@ -1,0 +1,67 @@
+﻿@model WebApplication2.Models.AppUser
+@{
+    ViewBag.Title = "Edit Account";
+    var role = ViewBag.Role as string;
+}
+
+<div class="container mt-5 pt-5">
+    <h3>✏️ edit account</h3>
+    <form asp-action="EditAccount" method="post">
+        <input type="hidden" asp-for="UserID" />
+
+        <div class="mb-3">
+            <label>Full Name</label>
+            <input asp-for="FullName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Email</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Phone</label>
+            <input asp-for="Phone" class="form-control" />
+        </div>
+
+        @if (role == "Patient")
+        {
+            var p = (WebApplication2.Models.PatientProfile)ViewBag.Patient;
+            <div class="mb-3">
+                <label>Date of Birth</label>
+                <input name="DateOfBirth" type="date" class="form-control" value="@p?.DateOfBirth?.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div class="mb-3">
+                <label>Gender</label>
+                <input name="Gender" class="form-control" value="@p?.Gender" />
+            </div>
+
+            <div class="mb-3">
+                <label>Address</label>
+                <input name="Address" class="form-control" value="@p?.Address" />
+            </div>
+        }
+
+        @if (role == "Doctor")
+        {
+            var d = (WebApplication2.Models.DoctorProfile)ViewBag.Doctor;
+            <div class="mb-3">
+                <label>Bio</label>
+                <textarea name="Bio" class="form-control">@d?.Bio</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Available Days</label>
+                <input name="AvailableDays" class="form-control" value="@d?.AvailableDays" />
+            </div>
+
+            <div class="mb-3">
+                <label>Clinic Address</label>
+                <input name="ClinicAddress" class="form-control" value="@d?.ClinicAddress" />
+            </div>
+        }
+
+        <button type="submit" class="btn btn-success">💾 حفظ التغييرات</button>
+    </form>
+</div>

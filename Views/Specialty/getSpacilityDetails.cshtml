@@ -1,0 +1,87 @@
+﻿@model WebApplication2.Models.SpecialtyDetailsViewModel
+
+<div class="container py-5 pt-5 mt-5">
+    <!-- ✅ معلومات التخصص -->
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-muted">@Model.Specialty.Name</h2>
+        <p class="lead text-muted">@Model.Specialty.Description</p>
+
+        @if (Model.Specialty.Photo != null)
+        {
+            <div class="d-flex justify-content-center mt-4">
+                <img src="@Url.Action("GetPhoto", "Specialty", new { id = Model.Specialty.SpecialtyID })"
+                     class="img-thumbnail shadow-lg rounded"
+                     style="max-width: 350px; height: auto; border: 4px solid #dee2e6;" />
+            </div>
+        }
+
+        @if (Context.Session.GetString("Role") == "Admin")
+        {
+            <div class="card shadow-sm mt-5 p-4 w-75 mx-auto">
+                <h5 class="mb-3">✏️ Edit Specialty</h5>
+                <form asp-action="EditSpecialty" asp-controller="Specialty" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="SpecialtyID" value="@Model.Specialty.SpecialtyID" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="Name" value="@Model.Specialty.Name" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="Description" class="form-control" rows="4" required>@Model.Specialty.Description</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">New Image (optional)</label>
+                        <input type="file" name="Photo" class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-success">💾 Save Changes</button>
+                </form>
+            </div>
+        }
+    </div>
+
+    <hr class="my-5" />
+
+    <!-- ✅ قائمة الأطباء -->
+    <div class="text-center mb-5">
+        <h3 class="fw-bold text-muted mb-4">Doctors in this Specialty</h3>
+
+        @if (Model.Doctors.Count == 0)
+        {
+            <div class="alert alert-warning w-50 mx-auto">
+                There are currently no doctors in this specialty.
+            </div>
+        }
+        else
+        {
+            <div class="row justify-content-center">
+                @foreach (var doc in Model.Doctors)
+                {
+                    <div class="col-md-6 col-lg-4 mb-4 d-flex">
+                        <a asp-controller="DoctorProfile" asp-action="Details" asp-route-id="@doc.DoctorID"
+                           class="text-decoration-none text-dark w-100">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title fw-semibold">@doc.DoctorName</h5>
+                                    <p class="card-text text-muted">
+                                        <i class="bi bi-geo-alt-fill"></i> @doc.ClinicAddress
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- ✅ زر العودة -->
+    <div class="text-center text-muted">
+        <a  asp-action="Index" asp-controller="Specialty" class="btn btn-outline-muted">
+            ← Back to Specializations
+        </a>
+    </div>
+</div>

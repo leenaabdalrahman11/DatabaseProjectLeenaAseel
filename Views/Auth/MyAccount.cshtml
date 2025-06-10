@@ -1,0 +1,41 @@
+﻿@model WebApplication2.Models.AppUser
+
+@{
+    ViewBag.Title = "My Account";
+}
+
+<div class="container mt-5 pt-5">
+    <h2>🧑‍💼 Account Information</h2>
+    <hr />
+
+    <p><strong>Full Name:</strong> @Model.FullName</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Phone:</strong> @Model.Phone</p>
+    <p><strong>Role:</strong> @ViewBag.Role</p>
+
+    @if (ViewBag.Role == "Patient")
+    {
+        var profile = (WebApplication2.Models.PatientProfile)ViewBag.PatientProfile;
+        if (profile != null)
+        {
+            <p><strong>Date of Birth:</strong> @profile.DateOfBirth?.ToShortDateString()</p>
+            <p><strong>Gender:</strong> @profile.Gender</p>
+            <p><strong>Address:</strong> @profile.Address</p>
+            <p><strong>File #:</strong> @profile.MedicalFileNumber</p>
+        }
+    }
+    else if (ViewBag.Role == "Doctor")
+    {
+        var profile = (WebApplication2.Models.DoctorProfile)ViewBag.DoctorProfile;
+        if (profile != null)
+        {
+            <p><strong>Specialty:</strong> @profile.SpecialtyID</p>
+            <p><strong>Bio:</strong> @profile.Bio</p>
+            <p><strong>Rating:</strong> @profile.Rating</p>
+            <p><strong>Available Days:</strong> @profile.AvailableDays</p>
+            <p><strong>Clinic Address:</strong> @profile.ClinicAddress</p>
+        }
+    }
+    <a asp-action="EditAccount" asp-controller="Auth" class="btn btn-warning">✏️ edit account</a>
+
+</div>

@@ -1,0 +1,187 @@
+﻿<partial name="_ValidationScriptsPartial" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebApplication2</title>
+    <script type="importmap"></script>
+    <!-- Bootstrap CDN (اختياري لتسريع التحميل في حال lib فيها مشكلة) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplication2.styles.css" asp-append-version="true" />
+
+</head>
+<body>
+    <header>   
+        <nav class="navbar bg-body-tertiary fixed-top NAVV">
+            <div class="container-fluid">
+                <!-- Logo or Title -->
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <img src="/Images/Logo.png" alt="Logo" style="height: 40px;" />
+                </a>
+
+                <!-- Toggle Button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Offcanvas Menu -->
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
+                            </li>
+
+                            @if (Context.Session.GetString("Token") == null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a>
+                                </li>
+                            }
+   
+                            else if (Context.Session.GetString("Role") == "Patient")
+                            {
+                                <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("MyAppointments", "Appointment")">My Appointments</a>
+								</li>
+                            }
+                            @if (Context.Session.GetString("Role") == "Doctor")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("MyPatients", "DoctorProfile")">My Patients</a>
+                                </li>
+                            }
+                            @if (Context.Session.GetString("Token") != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link"  href="@Url.Action("MyAccount", "Auth")">My Account</a>
+                                </li>
+                            }
+							@if (Context.Session.GetString("Token") != null)
+							{
+								<li class="nav-item">
+									<a class="nav-link" href="@Url.Action("Index", "Specialty")">Fields</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="@Url.Action("Logout", "Auth")">Logout</a>
+								</li>
+
+							}
+
+						</ul>
+
+                        <!-- Search box (optional) -->
+                        <form class="d-flex justify-content-center mb-4" method="get" asp-action="Search" asp-controller="DoctorProfile">
+                            <input type="text" name="query" class="form-control w-100" placeholder="Search for a doctor's name or specialty...
+" />
+                            <button class="btn btn-primary ms-2">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <!--
+    <div class="container">-->
+    <main role="main" class="">
+        @RenderBody()
+    </main>
+    <!-- </div>-->
+    <footer class=" text-light pt-5 pb-3 mt-5 shadow-lg" style="background-color:#196779">
+        <div class="container">
+            <div class="row text-center text-md-start footerr">
+
+
+                <div class="col-md-3 mb-4">
+                    <ul class="list-unstyled">
+                        <li><a class="text-light text-decoration-none" href="/">🏠 Home</a></li>
+                        @if (Context.Session.GetString("Token") == null)
+                        {
+
+                            <li><a class="text-light text-decoration-none" href="/Auth/Login">🔐 Login</a></li>
+                            <li><a class="text-light text-decoration-none" href="/Auth/Register">📝 Register</a></li>
+                        }
+                        @if (Context.Session.GetString("Token") != null)
+                        {
+                            <li>
+                                <a class="text-light text-decoration-none" href="/Auth/MyAccount">👥My Account</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+
+                <div class="col-md-3 mb-4">
+
+                    <ul class="list-unstyled">
+                        @if (Context.Session.GetString("Token") != null)
+
+                        {
+
+                            <li><a class="text-light text-decoration-none" href="/Home/IndexUser">📋 List of doctors</a></li>
+
+                        }
+                        @if (Context.Session.GetString("Token") != null)
+                        {
+                            <li><a class="text-light text-decoration-none" href="/Specialty/Index">📚 Specialties</a></li>
+                        }    
+                        @if (Context.Session.GetString("Token") != null && Context.Session.GetString("Role") == "Patient")
+                        {
+                            <li><a class="text-light text-decoration-none" href="@Url.Action("MyAppointments", "Appointment")">📅 My appointments</a></li>
+                        }
+     
+                        @if (Context.Session.GetString("Role") == "Doctor")
+                        {
+                            <li class="nav-item">
+                                <a class="text-light text-decoration-none" href="@Url.Action("MyPatients", "DoctorProfile")">📅 My Patients</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+              
+                <div class="col-md-3 mb-4">
+                   
+                    <ul class="list-unstyled">
+                        <li>📧 info@yourclinic.com</li>
+                        <li>📞 +970 123 456 789</li>
+                        <li>📍 Palestine - Ramallah</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="bg-light" />
+            <p class="text-center mb-0 text-muted">&copy; @DateTime.Now.Year - Electronic clinic system</p>
+        </div>
+    </footer>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

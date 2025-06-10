@@ -1,0 +1,30 @@
+﻿@model List<WebApplication2.Models.Appointment>
+
+<h3 class="mt-5 pt-5">📋 Appointments for Patient</h3>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-5 pt-5">No appointments found.</div>
+}
+else
+{
+    <table class="table table-striped pt-5 mt-5">
+        <thead>
+            <tr>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appt in Model)
+            {
+                <tr>
+                    <td>@appt.DateTime.ToString("g")</td>
+                    <td>@appt.Status</td>
+                    <td>@appt.Reason</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

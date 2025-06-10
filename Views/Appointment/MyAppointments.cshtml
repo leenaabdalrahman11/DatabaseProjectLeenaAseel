@@ -1,0 +1,47 @@
+﻿@model List<WebApplication2.Models.Appointment>
+
+@{
+    ViewBag.Title = "My appointments";
+}
+
+<h2 class="mt-4 mb-3 mt-5 pt-5">📅My Appointment</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">There are no appointments currently</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead class="table-light">
+<tr>
+    <th>Appointment ID</th>
+    <th>Doctor ID</th>
+    <th>Date & Time</th>
+    <th>Reason</th>
+    <th>Status</th>
+    <th>Cancel</th>
+</tr>
+
+        </thead>
+        <tbody>
+            @foreach (var appointment in Model)
+            {
+                <tr>
+                    <td>@appointment.AppointmentID</td>
+                    <td>@appointment.DoctorID</td>
+                    <td>@appointment.DateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@appointment.Reason</td>
+                    <td>@appointment.Status</td>
+                    <td>
+                        <form asp-action="Delete" asp-controller="Appointment" method="post" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                            <input type="hidden" name="appointmentId" value="@appointment.AppointmentID" />
+                            <button type="submit" class="btn btn-sm btn-danger">🗑 Cancel</button>
+                        </form>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
